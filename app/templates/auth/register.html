@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %} 注册{% endblock %}
+
+{% block page_content %}
+<div class="page-header text-center">
+    <h1>注册</h1>
+</div>
+<div class="col-md-offset-5 col-md-2">
+    <form method="post" class="">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.user_type)}}
+        {{ wtf.form_field(form.username) }}
+        {{ wtf.form_field(form.password) }}
+        {{ wtf.form_field(form.password2) }}
+        {{ wtf.form_field(form.email) }}
+        {{ wtf.form_field(form.phone_num) }}
+        {{ wtf.form_field(form.address) }}
+        {{ wtf.form_field(form.submit,class='btn btn-lg btn-primary btn-block')}}
+    </form>
+{#    {{ wtf.quick_form(form) }}#}
+</div>
+{% endblock %}

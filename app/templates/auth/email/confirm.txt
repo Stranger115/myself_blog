@@ -1,0 +1,5 @@
+亲爱的 {{user.username}}
+欢迎使用我的博客
+请点击下面的链接激活账户
+{{url_for('auth.confirm', token=token, _external=True)}}
+
