@@ -1,7 +1,0 @@
-列出了所有依赖包，便于在其他电脑中重新生成相同的虚拟环境
-flask-Bootstrap html&css扩展
-flask-Mail  邮件扩展
-flask-moment 时间扩展
-Flask-Script
-flask-Migrate
-flask-SQLAlchemy 数据库管理扩展
