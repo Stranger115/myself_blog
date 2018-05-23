@@ -6,7 +6,7 @@
 from flask import render_template, redirect, url_for, flash, request
 from flask.ext.login import login_user, login_required, logout_user, current_user
 from .forms import LoginForm, RegistrationForm
-from ..models import User, Merchant
+from ..models import User
 from ..email import send_email
 from app import db
 from . import auth
@@ -16,10 +16,7 @@ from . import auth
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        if form.user_type.data == 'p':
-            user = User.query.filter_by(username=form.username.data).first()
-        elif form.user_type.data == 'm':
-            user = Merchant.query.filter_by(merchant_name=form.username.data).first()
+        user = User.query.filter_by(username=form.username.data).first()
         if user is not None and user.verify_psssword(form.password.data):
             login_user(user, form.remember_me.data)  # 在用户会话中记录用户已登录
             return redirect(request.args.get('next') or url_for('main.index'))
@@ -39,16 +36,10 @@ def logout():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        user_type = form.user_type.data
-        # 判断注册用户类型
-        if user_type == 'p':
-            user = User(username=form.username.data, password=form.password.data,
-                        user_phone_num=form.phone_num.data, user_address=form.address.data,
-                        email=form.email.data)
-        elif user_type == 'm':
-            user = Merchant(merchant_name=form.username.data, password=form.password.data,
-                            merchant_phone_num=form.phone_num.data,
-                            merchant_address=form.address.data,email=form.email.data)
+        user = User(username=form.username.data, password=form.password.data,
+                    phone_num=form.phone_num.data, address=form.address.data,
+                    profile_picture='images/profile_picture/default.jpg',
+                    email=form.email.data)
         # 注册信息加入数据库
         db.session.add(user)
         db.session.commit()
@@ -78,7 +69,7 @@ def confirm(token):
 def before_request():
     # endpoint请求端点
     if current_user.is_authenticated:
-        current_user.ping()
+        current_user.ping()  # 更新已登录用户的访问时间
         if not current_user.confirmed and request.endpoint[:5] != 'auth.' \
                 and request.endpoint != 'static':
             return redirect(url_for('auth.unconfirmed'))
@@ -101,3 +92,4 @@ def resend_confirmation():
                user=current_user, token=token)
     flash('新的激活邮件已发送至您的邮箱，请及时激活')
     return redirect(url_for('main.index'))
+

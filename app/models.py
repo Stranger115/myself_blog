@@ -104,14 +104,14 @@ class User(UserMixin, db.Model):
         # 初始化role角色
         if self.role is None:
             if self.email == current_app.config['FLASKY_ADMIN']:
-                self.role = Role.query.filter_by(permissions=0xff).first
+                self.role = Role.query.filter_by(permissions=0xff).first()
             else:
-                self.role = Role.query.filter_by(default=True).first
+                self.role = Role.query.filter_by(default=True).first()
 
-    # ？？？？？？
+    # 检查用户是否拥有permissions权限
     def can(self, permissions):
         return self.role is None and \
-               ((self.role.permissions & permissions) == permissions)
+               ((self.role.permissions & permissions) == permissions)  # 按位与role可能拥有多种权限
 
     # 检查管理员权限
     def is_administrator(self):
@@ -158,12 +158,14 @@ class User(UserMixin, db.Model):
         return '<User %r>' % self.name
 
 
+# 程序不用检测用户是否登录即可调用current_user.can() 和 current_user.is_administrator()
 class AnonymousUser(AnonymousUserMixin):
     def can(self, permissions):
         return False
 
     def is_administrator(self):
         return False
+
 
 login_manager.anonymous_user = AnonymousUser
 
