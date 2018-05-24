@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block title %} current_user.username {% endblock %}
+
+{% block page_content %}
+<div class="page-header text-center">
+    <h1>个人信息修改</h1>
+</div>
+<div class="col-md-2 col-md-offset-5">
+    <form method="post">
+        {{ form.hidden_tag() }}
+        {{ form.csrf_token }}
+        {{ wtf.form_field(form.profile_picture) }}
+        {% if  current_user.is_administrator()%}
+        {{ wtf.form_field(from.role) }}
+        {% endif %}
+        {{ wtf.form_field(form.username) }}
+        {{ wtf.form_field(form.email) }}
+        {{ wtf.form_field(form.address) }}
+        {{ wtf.form_field(form.about_me) }}
+        {{ wtf.form_field(form.submit, class='btn btn-lg btn-primary btn-block') }}
+    </form>
+</div>
+{% endblock %}
