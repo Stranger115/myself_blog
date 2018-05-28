@@ -8,6 +8,8 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, AnonymousUserMixin
 from flask_moment import datetime
+from markdown import markdown
+import bleach
 from flask import current_app
 from . import login_manager
 
@@ -200,8 +202,23 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64))
     body = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, index=True, default='dynamic')
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow())
+    body_html = db.Column(db.Text)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    # 处理Markdown文档， 将文本渲染成html
+    @staticmethod
+    def on_changed_body(target, value, oldvlaue, initiator):
+        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em',
+                        'i', 'li', 'ol', 'pre', 'strong', 'ul', 'h1',
+                        'h2', 'h3', 'p']
+
+        # markdown():初步把Markdown文本转换为html
+        # bleach.clean():将不在白名单中标签清除
+        # bleach.linkify():将html中的<a>转换为链接
+        target.body_html = bleach.linkify(
+            bleach.clean(markdown(value, outout_format='html'),
+                                  tags=allowed_tags, strip=True))
 
     # 生成虚拟文章
     @staticmethod
@@ -220,3 +237,6 @@ class Post(db.Model):
                      author=u)
             db.session.add(p)
             db.session.commit()
+# 把on_changed_body函数注册到Post.body上，当body被设置新值，函数自动调用
+db.event.listen(Post.body,'set', Post.on_changed_body)
+

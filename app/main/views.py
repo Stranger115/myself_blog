@@ -115,21 +115,41 @@ def article_label():
     return render_template('article_label.html', posts=posts, pagination=pagination)
 
 
-@main.route('/article/<post>')
-def article(post):
+@main.route('/article/<int:id>')
+def article(id):
+    post = Post.query.get_or_404(id)
     return render_template('article.html', post=post)
 
 
-@main.route('/edit_article', methods=['GET', 'POST'])
+@main.route('/post_article', methods=['GET', 'POST'])
 @login_required
-def edit_article():
+def post_article():
     form = PostForm()
-    if current_user.can(Permissions.WRITE_ARTICLES) and form.validate_on_submit():
+    if form.validate_on_submit():
         post = Post(title=form.title.data,
                     body=form.body.data,
                     author=current_user._get_current_object())
         db.session.add(post)
         return redirect(url_for('.index'))
+    return render_template('post_article.html', form=form)
+
+
+@main.route('/edit_article/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_article(id):
+    post = Post.query.get_or_404(id)
+    if current_user != post.author and \
+        not current_user.can(Permissions.ADMINISTER):
+        abort(403)
+    form = PostForm()
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.body = form.body.data
+        db.session.add(post)
+        flash('文章已修改！')
+        return redirect(url_for('.article', id=post.id))
+    form.title.data = post.title
+    form.body.data = post.body
     return render_template('edit_article.html', form=form)
 
 

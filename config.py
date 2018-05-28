@@ -17,7 +17,12 @@ class Config:
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
+    FLASKY_MAIL_SENDER = 'Flasky Admin shadow.qiuying@qq.com'
+    FLASKY_ADMIN = 'shadow.qiuying@qq.com'
+
     MAIL_SERVER = 'smtp.qq.com'
+
     MAIL_PORT = 465
     MAIL_USE_TLS = False
     MAIL_USE_SSL = False
@@ -25,25 +30,13 @@ class Config:
     SSL_REDIRECT = False
     MAIL_USERNAME = 'shadow.qiuying@qq.com'  # os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = 'bwpyhghjfjoscage'  # os.environ.get('MAIL_PASSWORD')
+    FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN') or 'shadow.qiuying@qq.com'
 
-    FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
-    FLASKY_MAIL_SENDER = 'Flasky Admin shadow.qiuying@qq.com'
-    FLASKY_ADMIN = 'shadow.qiuying@qq.com'
+    UPLOADS_DEFAULT_DEST = r'D:\projects\myself_blog\app\static\images\profile_picture'
+    UPLOADED_PHOTOS_DEST = r'D:\projects\myself_blog\app\static\images\profile_picture'
 
-    # MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.googlemail.com')
-    # MAIL_PORT = int(os.environ.get('MAIL_PORT', '587'))
-    # MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'true').lower() in ['true', 'on', '1']
-
-    # FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
-    # FLASKY_MAIL_SENDER = 'Flasky Admin <flasky@example.com>'
-    # FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
-    # SSL_REDIRECT = False
-    # SQLALCHEMY_TRACK_MODIFICATIONS = False
-    # SQLALCHEMY_RECORD_QUERIES = True
-    # FLASKY_POSTS_PER_PAGE = 20
-    # FLASKY_FOLLOWERS_PER_PAGE = 50
-    # FLASKY_COMMENTS_PER_PAGE = 30
-    # FLASKY_SLOW_DB_QUERY_TIME = 0.5A
+    # 分页显示文章数量
+    FLASKY_POSTS_PER_PAGE = 2
 
     # 对当前环境配置初始化
     @staticmethod
@@ -57,15 +50,9 @@ class Config:
 class DevelopmentConfig(Config):
     """专用的配置"""
     DEBUG = True
-    MAIL_SERVER = 'smtp.googlemail.com'
 
-    MAIL_PORT = 587
-    MAIL_USE_TLS = True
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
-                              'sqlite:///' + os.path.join(basedir,
-                                                          'data-dev.sqlite')
+                              'mysql+pymysql://root:20180415@localhost/my_blog'
 
 
 class TestingConfig(Config):
