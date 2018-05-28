@@ -4,12 +4,13 @@
 # date: 2018/4/14
 
 from datetime import datetime
-from flask import render_template, session, redirect, url_for, flash, abort
+from flask import render_template, request, redirect, url_for, flash, abort,\
+    current_app
 from flask.ext.login import login_required, current_user
 from app import db, photos
 from . import main
-from .forms import EditProfileUserForm, EditProfileAdminForm
-from ..models import User, Permissions
+from .forms import EditProfileUserForm, EditProfileAdminForm, PostForm
+from ..models import User, Permissions, Post
 from ..decorators import admin_required, permission_required
 
 
@@ -40,7 +41,8 @@ def user(username):
     user = User.query.filter_by(username=username).first()
     if user is None:
         abort(404)
-    return render_template('user.html', user=user)
+    posts = user.posts.order_by(Post.timestamp.desc()).all()
+    return render_template('user.html', user=user, posts=posts)
 
 
 @main.route('/edit_profile', methods=['GET', 'POST'])
@@ -101,6 +103,36 @@ def for_admin_only():
 @permission_required(Permissions.MODERATE_COMMITS)
 def for_moderators_only():
     return "For comment moderators"
+
+
+@main.route('/article_label', methods=['GET','POST'])
+def article_label():
+    page = request.args.get('page', 1, type=int)
+    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+        error_out=False)
+    posts = pagination.items
+    return render_template('article_label.html', posts=posts, pagination=pagination)
+
+
+@main.route('/article/<post>')
+def article(post):
+    return render_template('article.html', post=post)
+
+
+@main.route('/edit_article', methods=['GET', 'POST'])
+@login_required
+def edit_article():
+    form = PostForm()
+    if current_user.can(Permissions.WRITE_ARTICLES) and form.validate_on_submit():
+        post = Post(title=form.title.data,
+                    body=form.body.data,
+                    author=current_user._get_current_object())
+        db.session.add(post)
+        return redirect(url_for('.index'))
+    return render_template('edit_article.html', form=form)
+
+
 
 
 
