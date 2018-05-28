@@ -8,7 +8,7 @@ from wtforms import SubmitField, PasswordField, RadioField, BooleanField, \
     StringField, SelectField
 from wtforms.validators import DataRequired, EqualTo, Length, Regexp, Email
 from wtforms import ValidationError
-from ..models import User, Merchant
+from ..models import User
 # import json
 
 # province_id = '86'
@@ -17,15 +17,11 @@ from ..models import User, Merchant
 class LoginForm(Form):
     username = StringField('用户登录:', validators=[DataRequired()])
     password = PasswordField('密码：', validators=[DataRequired()])
-    user_type = RadioField('登录用户:', choices=[('p', '普通用户'), ('m', '商户')],
-                           validators=[DataRequired()])
     remember_me = BooleanField('记住我', default='checked', validators=[DataRequired()])
     submit = SubmitField('登录')
 
 
 class RegistrationForm(Form):
-    user_type = RadioField('登录用户:', choices=[('p', '普通用户'), ('m', '商户')],
-                           validators=[DataRequired()])
     username = StringField('用户昵称：', validators=[DataRequired(), Length(1, 64)],)
     email = StringField('用户邮箱', validators=[DataRequired(), Length(1, 64), Email()])
     password = PasswordField('密码：', validators=[DataRequired(),
@@ -50,18 +46,10 @@ class RegistrationForm(Form):
 
     # 检查用户名是否已存在
     def validate_username(self, field):
-        if self.user_type == 'p':
-            if User.query.filter_by(username=field.data).first():
-                raise ValidationError('昵称已存在')
-        elif self.user_type == 'm':
-            if Merchant.query.filter_by(merchant_name=field.data).first():
-                raise ValidationError('昵称已存在')
+        if User.query.filter_by(username=field.data).first():
+            raise ValidationError('昵称已存在')
 
     def validate_email(self, field):
-        if self.user_type == 'p':
-            if User.query.filter_by(email=field.data).first():
-                raise ValidationError('邮箱已注册')
-        elif self.user_type == 'm':
-            if Merchant.query.filter_by(email=field.data).first():
-                raise ValidationError('邮箱已注册')
+        if User.query.filter_by(email=field.data).first():
+            raise ValidationError('邮箱已注册')
             

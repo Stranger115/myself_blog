@@ -3,12 +3,13 @@
 # _author: Stranger
 # date: 2018/4/12
 from flask import Flask
-from flask.ext.bootstrap import Bootstrap
-from flask.ext.mail import Mail
-from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.moment import Moment
-from flask.ext.login import LoginManager
-from flask.ext.mail import Mail
+from flask_bootstrap import Bootstrap
+from flask_sqlalchemy import SQLAlchemy
+from flask_moment import Moment
+from flask_login import LoginManager
+from flask_mail import Mail
+from flask_pagedown import PageDown
+from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 from config import config
 
 
@@ -18,6 +19,9 @@ bootstrap = Bootstrap()
 mail = Mail()
 moment = Moment()
 db = SQLAlchemy()
+pagedown = PageDown()
+photos = UploadSet('photos', IMAGES)
+
 
 login_manager = LoginManager()
 # 防止用户会话被篡改
@@ -40,6 +44,9 @@ def create_app(config_name):
     moment.init_app(app)
     db.init_app(app)
     login_manager.init_app(app)
+    pagedown.init_app(app)
+    configure_uploads(app, photos)
+    patch_request_class(app)
 
 
     # 附加路由和自定义的错误页面
