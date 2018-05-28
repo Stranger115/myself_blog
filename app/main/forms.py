@@ -59,3 +59,9 @@ class EditProfileAdminForm(FlaskForm):
         if field.data != self.user.username and \
                 User.query.filter_by(username=field.data).first():
             raise ValidationError('昵称已被注册')
+
+
+class PostForm(FlaskForm):
+    title = StringField('标题', validators=[DataRequired(), Length(1, 64)])
+    body = TextAreaField('正文：', validators=[DataRequired()])
+    submit = SubmitField('提交')

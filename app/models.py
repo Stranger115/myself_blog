@@ -97,10 +97,11 @@ class User(UserMixin, db.Model):
     confirmed = db.Column(db.Boolean, default=False)
 
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
 
     # 定义默认用户角色
     def __init__(self, **kwargs):
-        super(User, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         # 初始化role角色
         if self.role is None:
             if self.email == current_app.config['FLASKY_ADMIN']:
@@ -116,6 +117,30 @@ class User(UserMixin, db.Model):
     # 检查管理员权限
     def is_administrator(self):
         return self.can(Permissions.ADMINISTER)
+
+    # 生成虚拟用户
+    @staticmethod
+    def generate_fake(count=100):
+        from sqlalchemy.exc import IntegrityError
+        from random import seed
+        import forgery_py
+
+
+        seed()
+        for i in range(count):
+            u = User(email=forgery_py.internet.email_address(),
+                     username=forgery_py.internet.user_name(True),
+                     password=forgery_py.lorem_ipsum.word(),
+                     confirmed=True,
+                     address=forgery_py.address.city(),
+                     about_me=forgery_py.lorem_ipsum.sentence(),
+                     member_since=forgery_py.date.date(True))
+            db.session.add(u)
+            try:
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()
+
 
     # 把一个属性转化为一个方法，限制属性操作
     @property
@@ -170,3 +195,28 @@ class AnonymousUser(AnonymousUserMixin):
 login_manager.anonymous_user = AnonymousUser
 
 
+class Post(db.Model):
+    __tablename__ = 'posts'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(64))
+    body = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, index=True, default='dynamic')
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    # 生成虚拟文章
+    @staticmethod
+    def generate_fake(count=100):
+        from random import seed, randint
+        import forgery_py
+
+
+        seed()
+        user_count = User.query.count()
+        for i in range(count):
+            u = User.query.offset(randint(0, 100)).first()
+            p = Post(title=forgery_py.internet.user_name(),
+                     body=forgery_py.lorem_ipsum.sentences(randint(1, 3)),
+                     timestamp=forgery_py.date.date(True),
+                     author=u)
+            db.session.add(p)
+            db.session.commit()
