@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% import 'article/_macros.html' as macros %}
+
+{% block page_content %}
+    <div class="">
+        {% for follow in following %}
+            <a href="{{ url_for('main.user', username=username) }}">{{ follow.user.username}}</a>
+        {% endfor %}
+    </div>
+    <div class="pagination">
+        {{ macros.pagination_widget(pagination, endpoint, username=user.username) }}
+    </div>
+{% endblock %}
