@@ -12,9 +12,9 @@
         {{ form.hidden_tag() }}
         {{ form.csrf_token }}
         {{ wtf.form_field(form.profile_picture) }}
-        {% if  current_user.is_administrator()%}
-        {{ wtf.form_field(from.role) }}
-        {% endif %}
+{#        {% if  current_user.is_administrator()%}#}
+{#        {{ wtf.form_field(from.role) }}#}
+{#        {% endif %}#}
         {{ wtf.form_field(form.username) }}
         {{ wtf.form_field(form.email) }}
         {{ wtf.form_field(form.address) }}

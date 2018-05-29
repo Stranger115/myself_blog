@@ -2,34 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bf1aaf8d-cb3d-47d6-93fb-1b603a20a5d9" name="Default" comment="Define user's default role">
-      <change afterPath="$PROJECT_DIR$/app/article/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/article/form.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/article/view.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/follow/__init__.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/follow/view.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/profile/__init__.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/app/profile/view.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/templates/article/_comments.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/main/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/main/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/templates/_article_lists.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/article/_article_lists.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/templates/_macros.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/article/_macros.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/templates/article.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/article/article.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/templates/article_label.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/article/article_label.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/templates/edit_article.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/article/edit_article.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/templates/edit_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/profile/edit_profile.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/templates/follow.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/follow/follow.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/templates/followed.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/follow/followed.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/templates/followers.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/follow/followers.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/templates/post_article.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/article/post_article.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/templates/unfollow.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/follow/unfollow.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/templates/user.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/user.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -84,8 +66,8 @@
       <file leaf-file-name="view.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/profile/view.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-118">
-              <caret line="14" column="16" lean-forward="true" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="16" />
+            <state relative-caret-position="155">
+              <caret line="21" column="48" lean-forward="true" selection-start-line="21" selection-start-column="48" selection-end-line="21" selection-end-column="48" />
               <folding>
                 <element signature="e#85#106#0" expanded="true" />
               </folding>
@@ -96,7 +78,9 @@
       <file leaf-file-name="edit_profile.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/templates/profile/edit_profile.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-63" />
+            <state relative-caret-position="-22">
+              <caret line="16" column="21" lean-forward="true" selection-start-line="14" selection-start-column="10" selection-end-line="16" selection-end-column="21" />
+            </state>
           </provider>
         </entry>
       </file>
@@ -201,7 +185,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/tests/test_basics.py" />
         <option value="$PROJECT_DIR$/tests/__init__.py" />
         <option value="$PROJECT_DIR$/tests/test_user_model.py" />
         <option value="$PROJECT_DIR$/app/auth/login.py" />
@@ -252,6 +235,7 @@
         <option value="$PROJECT_DIR$/app/templates/user.html" />
         <option value="$PROJECT_DIR$/app/__init__.py" />
         <option value="$PROJECT_DIR$/app/profile/__init__.py" />
+        <option value="$PROJECT_DIR$/app/templates/profile/edit_profile.html" />
       </list>
     </option>
   </component>
@@ -290,18 +274,6 @@
               <item name="myself_blog" type="b2602c69:ProjectViewProjectNode" />
               <item name="myself_blog" type="462c0819:PsiDirectoryNode" />
               <item name="app" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="myself_blog" type="b2602c69:ProjectViewProjectNode" />
-              <item name="myself_blog" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="myself_blog" type="b2602c69:ProjectViewProjectNode" />
-              <item name="myself_blog" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="profile" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="myself_blog" type="b2602c69:ProjectViewProjectNode" />
@@ -517,7 +489,14 @@
       <option name="project" value="LOCAL" />
       <updated>1527557057796</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="change article view">
+      <created>1527607720677</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1527607720677</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TodoView">
@@ -537,9 +516,9 @@
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Version Control" order="12" weight="0.3289225" />
       <window_info anchor="bottom" id="Python Console" order="9" weight="0.32876712" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.8595679" visible="true" weight="0.3548387" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.8595679" visible="true" weight="0.3548387" />
       <window_info anchor="bottom" id="Terminal" order="10" weight="0.4763705" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4853229" visible="true" weight="0.19521604" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4853229" visible="true" weight="0.19521604" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" weight="0.16435185" />
       <window_info anchor="right" id="SciView" order="4" weight="0.3294753" />
@@ -566,7 +545,8 @@
     <MESSAGE value="change profile" />
     <MESSAGE value="add register" />
     <MESSAGE value="add followers and followed" />
-    <option name="LAST_COMMIT_MESSAGE" value="add followers and followed" />
+    <MESSAGE value="change article view" />
+    <option name="LAST_COMMIT_MESSAGE" value="change article view" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -895,8 +875,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/profile/view.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-118">
-          <caret line="14" column="16" lean-forward="true" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="16" />
+        <state relative-caret-position="155">
+          <caret line="21" column="48" lean-forward="true" selection-start-line="21" selection-start-column="48" selection-end-line="21" selection-end-column="48" />
           <folding>
             <element signature="e#85#106#0" expanded="true" />
           </folding>
@@ -905,7 +885,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/templates/profile/edit_profile.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-63" />
+        <state relative-caret-position="-22">
+          <caret line="16" column="21" lean-forward="true" selection-start-line="14" selection-start-column="10" selection-end-line="16" selection-end-column="21" />
+        </state>
       </provider>
     </entry>
   </component>
