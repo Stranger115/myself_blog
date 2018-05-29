@@ -105,7 +105,7 @@ def for_moderators_only():
     return "For comment moderators"
 
 
-@main.route('/article_label', methods=['GET','POST'])
+@main.route('/article_label', methods=['GET', 'POST'])
 def article_label():
     page = request.args.get('page', 1, type=int)
     pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
@@ -153,6 +153,57 @@ def edit_article(id):
     return render_template('edit_article.html', form=form)
 
 
+@main.route('/follow/<username>', methods=['GET', 'POST'])
+@login_required
+# @Permissions
+def follow(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('用户不存在')
+        return redirect(url_for('.index'))
+    if current_user.is_following(user):
+        flash('已关注')
+    current_user.follow(user)
+    flash('已关注')
+    return render_template('follow.html')
 
 
+@main.route('/unfollow/<username>')
+@login_required
+def unfollow(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('用户不存在')
+    current_user.unfollow(user)
+    flash('已取消关注')
+    return render_template('unfollow.html')
 
+
+@main.route('/followers/<username>')
+def followers(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('用户不存在')
+    page = request.args.get('page', 1, type=int)
+    pagination = user.followers.paginate(
+        page, per_page=current_app.config['FLASKY_FOLLOWERS_PER_PAGE'],
+        error_out=False)
+    follows = [{'user': item.follower, 'timestamp': item.timestamp}
+               for item in pagination.items]
+    return render_template('followers.html', user=user, pagination=pagination,
+                           endpoint='.followers', follows=follows)
+
+
+@main.route('/followed/<username>')
+def followed(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('用户不存在')
+    page = request.args.get('page', 1, type=int)
+    pagination = user.followed.paginate(
+        page=page, per_page=current_app.config['FLASKY_FOLLOWERS_PER_PAGE'],
+        error_out=False)
+    following = [{'user': item.follower, 'timestamp': item.timestamp}
+                for item in pagination.items]
+    return render_template('followed.html', user=user, pagination=pagination,
+                           endpoint='.followed', following=following)

@@ -83,6 +83,14 @@ class Role(db.Model):
         return '<Role %r>' % self.name
 
 
+class Follow(db.Model):
+    __tablename_ = 'follows'
+    follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    # 被关注者
+    followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow())
+
+
 class User(UserMixin, db.Model):
     """用户"""
     __tablename__ = 'users'
@@ -100,6 +108,14 @@ class User(UserMixin, db.Model):
 
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+
+    followed = db.relationship('Follow', foreign_keys=[Follow.follower_id],
+                               backref=db.backref('follower', lazy='joined'),
+                               lazy='dynamic', cascade='all,delete-orphan')
+
+    followers = db.relationship('Follow', foreign_keys=[Follow.followed_id],
+                                backref=db.backref('followed', lazy='joined'),
+                                lazy='dynamic', cascade='all,delete-orphan')
 
     # 定义默认用户角色
     def __init__(self, **kwargs):
@@ -119,6 +135,26 @@ class User(UserMixin, db.Model):
     # 检查管理员权限
     def is_administrator(self):
         return self.can(Permissions.ADMINISTER)
+
+    # 添加联结
+    def follow(self, user):
+        if not self.is_following(user):
+            f = Follow(follower=self, followed=user)
+            db.session.add(f)
+
+    #  删除关联
+    def unfollow(self, user):
+        f = self.followed.filter_by(followed_id=user.id).first()
+        if f:
+            db.session.delete(f)
+
+    # 查询是否已关注某用户
+    def is_following(self, user):
+        return self.followed.filter_by(followed_id=user.id).first() is not None
+
+    # 查询是否被某用户关注
+    def is_followed_by(self, user):
+        return self.followers.filter_by(follower_id=user.id).first() is not None
 
     # 生成虚拟用户
     @staticmethod
@@ -239,4 +275,5 @@ class Post(db.Model):
             db.session.commit()
 # 把on_changed_body函数注册到Post.body上，当body被设置新值，函数自动调用
 db.event.listen(Post.body,'set', Post.on_changed_body)
+
 

@@ -37,6 +37,7 @@ class Config:
 
     # 分页显示文章数量
     FLASKY_POSTS_PER_PAGE = 2
+    FLASKY_FOLLOWERS_PER_PAGE = 10
 
     # 对当前环境配置初始化
     @staticmethod
