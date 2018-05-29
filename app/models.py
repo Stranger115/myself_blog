@@ -83,8 +83,53 @@ class Role(db.Model):
         return '<Role %r>' % self.name
 
 
+class Post(db.Model):
+    __tablename__ = 'posts'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(64))
+    body = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow())
+    body_html = db.Column(db.Text)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    # 处理Markdown文档， 将文本渲染成html
+    @staticmethod
+    def on_changed_body(target, value, oldvlaue, initiator):
+        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em',
+                        'i', 'li', 'ol', 'pre', 'strong', 'ul', 'h1',
+                        'h2', 'h3', 'p']
+
+        # markdown():初步把Markdown文本转换为html
+        # bleach.clean():将不在白名单中标签清除
+        # bleach.linkify():将html中的<a>转换为链接
+        target.body_html = bleach.linkify(
+            bleach.clean(markdown(value, outout_format='html'),
+                                  tags=allowed_tags, strip=True))
+
+    # 生成虚拟文章
+    @staticmethod
+    def generate_fake(count=100):
+        from random import seed, randint
+        import forgery_py
+
+
+        seed()
+        user_count = User.query.count()
+        for i in range(count):
+            u = User.query.offset(randint(0, 100)).first()
+            p = Post(title=forgery_py.internet.user_name(),
+                     body=forgery_py.lorem_ipsum.sentences(randint(1, 3)),
+                     timestamp=forgery_py.date.date(True),
+                     author=u)
+            db.session.add(p)
+            db.session.commit()
+# 把on_changed_body函数注册到Post.body上，当body被设置新值，函数自动调用
+db.event.listen(Post.body,'set', Post.on_changed_body)
+
+
 class Follow(db.Model):
     __tablename_ = 'follows'
+    # 用户
     follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     # 被关注者
     followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
@@ -155,6 +200,13 @@ class User(UserMixin, db.Model):
     # 查询是否被某用户关注
     def is_followed_by(self, user):
         return self.followers.filter_by(follower_id=user.id).first() is not None
+
+    # 获取所关注用户的文章
+    # 定义为属性，调用时不用（）
+    @property
+    def followed_posts(self):
+        return Post.query.join(Follow, Follow.followed_id == Post.author_id)\
+            .filter(Follow.follower_id == self.id)
 
     # 生成虚拟用户
     @staticmethod
@@ -233,47 +285,6 @@ class AnonymousUser(AnonymousUserMixin):
 login_manager.anonymous_user = AnonymousUser
 
 
-class Post(db.Model):
-    __tablename__ = 'posts'
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(64))
-    body = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow())
-    body_html = db.Column(db.Text)
-    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    # 处理Markdown文档， 将文本渲染成html
-    @staticmethod
-    def on_changed_body(target, value, oldvlaue, initiator):
-        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em',
-                        'i', 'li', 'ol', 'pre', 'strong', 'ul', 'h1',
-                        'h2', 'h3', 'p']
-
-        # markdown():初步把Markdown文本转换为html
-        # bleach.clean():将不在白名单中标签清除
-        # bleach.linkify():将html中的<a>转换为链接
-        target.body_html = bleach.linkify(
-            bleach.clean(markdown(value, outout_format='html'),
-                                  tags=allowed_tags, strip=True))
-
-    # 生成虚拟文章
-    @staticmethod
-    def generate_fake(count=100):
-        from random import seed, randint
-        import forgery_py
-
-
-        seed()
-        user_count = User.query.count()
-        for i in range(count):
-            u = User.query.offset(randint(0, 100)).first()
-            p = Post(title=forgery_py.internet.user_name(),
-                     body=forgery_py.lorem_ipsum.sentences(randint(1, 3)),
-                     timestamp=forgery_py.date.date(True),
-                     author=u)
-            db.session.add(p)
-            db.session.commit()
-# 把on_changed_body函数注册到Post.body上，当body被设置新值，函数自动调用
-db.event.listen(Post.body,'set', Post.on_changed_body)
 
 

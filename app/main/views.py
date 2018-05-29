@@ -5,7 +5,7 @@
 
 from datetime import datetime
 from flask import render_template, request, redirect, url_for, flash, abort,\
-    current_app
+    current_app, make_response
 from flask.ext.login import login_required, current_user
 from app import db, photos
 from . import main
@@ -15,11 +15,38 @@ from ..decorators import admin_required, permission_required
 
 
 # 路由修饰器由蓝本提供
-@main.route('/')
+@main.route('/', methods=['GET', 'POST'])
 def index():
-    name = None
-    return render_template('index.html', name=name, current_time=datetime.utcnow())
+    show_followed = False
+    # 首页显示所关注者的文章
+    if current_user.is_authenticated:
+        show_followed = bool(request.cookies.get('show_followed', ''))
+    if show_followed:
+        query = current_user.followed_posts
+    else:
+        query = Post.query
+    page = request.args.get('page', 1, type=int)
+    pagination = query.order_by(Post.timestamp.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_FOLLOWERS_PER_PAGE'],
+        error_out=False)
+    posts = pagination.items
+    return render_template('index.html', pagination=pagination, posts=posts,
+                           current_time=datetime.utcnow())
 
+
+@main.route('/choose_articles')
+def show_all():
+    resp = make_response(redirect(url_for('.index')))
+    resp.set_cookie('show_followed', '', max_age=30*24*60*60)  # max_age:cookie过期时间
+    return resp
+
+
+@main.route('/followed_articles')
+@login_required
+def show_followed_articles():
+    resp = make_response(redirect(url_for('.index')))
+    resp.set_cookie('show_followed', '1', max_age=30*24*60*60)
+    return resp
 
 @main.errorhandler(404)
 def page_not_find(e):
