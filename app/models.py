@@ -92,6 +92,8 @@ class Post(db.Model):
     body_html = db.Column(db.Text)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
+    # comments = db.relationship('Post', backref='article', lazy='dynamic')
+
     # 处理Markdown文档， 将文本渲染成html
     @staticmethod
     def on_changed_body(target, value, oldvlaue, initiator):
@@ -152,6 +154,7 @@ class User(UserMixin, db.Model):
     confirmed = db.Column(db.Boolean, default=False)
 
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+
     posts = db.relationship('Post', backref='author', lazy='dynamic')
 
     followed = db.relationship('Follow', foreign_keys=[Follow.follower_id],
@@ -161,6 +164,8 @@ class User(UserMixin, db.Model):
     followers = db.relationship('Follow', foreign_keys=[Follow.followed_id],
                                 backref=db.backref('followed', lazy='joined'),
                                 lazy='dynamic', cascade='all,delete-orphan')
+    # comments = db.relationship('User', backref='author', lazy='dynamic')
+
 
     # 定义默认用户角色
     def __init__(self, **kwargs):
@@ -283,6 +288,30 @@ class AnonymousUser(AnonymousUserMixin):
 
 
 login_manager.anonymous_user = AnonymousUser
+
+
+# class Comment(db.Model):
+#     """评论"""
+#     __tablename__ = 'comments'
+#     id = db.Column(db.Integer, primary_key=True)
+#     body = db.Column(db.Text)
+#     body_html = db.Column(db.Text)
+#     disabled = db.Column(db.Boolean)  # 查禁不当评论
+#     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow())
+#
+#     author_id = db.Column(db.Integer, primary_key='users.id')
+#     article_id = db.Column(db.Integer, primary_key='posts.id')
+#
+#     @staticmethod
+#     def on_changed_body(target, value, oldvalue, initator):
+#         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em',
+#                         'i', 'li', 'ol', 'pre', 'strong', 'ul', 'h1',
+#                         'h2', 'h3', 'p']
+#         target.body_html = bleach.linkify(bleach.clean(
+#             markdown(value, output_format='html'),
+#             tags=allowed_tags, strip=True))
+# # 监听
+# db.event.listen(Comment.body, 'set', Comment.on_changed_body)
 
 
 

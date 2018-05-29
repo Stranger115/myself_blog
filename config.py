@@ -35,9 +35,11 @@ class Config:
     UPLOADS_DEFAULT_DEST = r'D:\projects\myself_blog\app\static\images\profile_picture'
     UPLOADED_PHOTOS_DEST = r'D:\projects\myself_blog\app\static\images\profile_picture'
 
-    # 分页显示文章数量
+    # 分页显示数量
     FLASKY_POSTS_PER_PAGE = 2
     FLASKY_FOLLOWERS_PER_PAGE = 10
+    FLASKY_INDEX_PRE_PAGE = 5
+    FLASKY_COMMINTS_PER_PAGE = 10
 
     # 对当前环境配置初始化
     @staticmethod

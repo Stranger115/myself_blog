@@ -53,7 +53,13 @@ def create_app(config_name):
 
     from .main import main as main_blueprint
     from .auth import auth as auth_blueprint
+    from .article import article as article_blueprint
+    from .follow import follow as follow_blueprint
+    from .profile import profile as profile_blueprint
     app.register_blueprint(main_blueprint)
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
+    app.register_blueprint(article_blueprint, url_prefix='/article')
+    app.register_blueprint(follow_blueprint, url_prefix='/follow')
+    app.register_blueprint(profile_blueprint, url_prefix='/profile')
 
     return app

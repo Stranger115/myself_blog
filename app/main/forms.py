@@ -6,8 +6,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Length, Email, Regexp
 from wtforms import ValidationError
-from flask_wtf.file import FileField, FileAllowed, FileRequired
-from flask_pagedown.fields import PageDownField
+from flask_wtf.file import FileField, FileAllowed
 from app import photos
 from ..models import Role, User
 
@@ -62,7 +61,4 @@ class EditProfileAdminForm(FlaskForm):
             raise ValidationError('昵称已被注册')
 
 
-class PostForm(FlaskForm):
-    title = StringField('标题', validators=[DataRequired(), Length(1, 64)])
-    body = PageDownField('正文：', validators=[DataRequired()])
-    submit = SubmitField('提交')
+

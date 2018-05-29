@@ -9,7 +9,7 @@ from flask import render_template, request, redirect, url_for, flash, abort,\
 from flask.ext.login import login_required, current_user
 from app import db, photos
 from . import main
-from .forms import EditProfileUserForm, EditProfileAdminForm, PostForm
+from .forms import EditProfileUserForm, EditProfileAdminForm
 from ..models import User, Permissions, Post
 from ..decorators import admin_required, permission_required
 
@@ -27,7 +27,7 @@ def index():
         query = Post.query
     page = request.args.get('page', 1, type=int)
     pagination = query.order_by(Post.timestamp.desc()).paginate(
-        page, per_page=current_app.config['FLASKY_FOLLOWERS_PER_PAGE'],
+        page, per_page=current_app.config['FLASKY_INDEX_PRE_PAGE'],
         error_out=False)
     posts = pagination.items
     return render_template('index.html', pagination=pagination, posts=posts,
@@ -72,52 +72,6 @@ def user(username):
     return render_template('user.html', user=user, posts=posts)
 
 
-@main.route('/edit_profile', methods=['GET', 'POST'])
-@login_required
-def edit_profile():
-    form = EditProfileUserForm()
-    if form.validate_on_submit():
-        current_user.username = form.username.data
-        current_user.email = form.email.data
-        filename = photos.save(form.profile_picture.data)
-        current_user.profile_picture = photos.url(filename)
-        current_user.address = form.address.data
-        current_user.about_me = form.about_me.data
-        db.session.add(current_user)
-        # if form.profile_picture.data is None:
-        #     flash(photos)
-        return redirect(url_for('main.user', username=current_user.username))
-    form.username.data = current_user.username
-    form.address.data = current_user.address
-    form.about_me.data = current_user.about_me
-    return render_template('edit_profile.html', form=form)
-
-
-@main.route('/edit_profile/<int:id>', methods=['GET', 'POST'])
-@login_required
-# @admin_required
-def edit_profile_admin(id):
-    user = User.query.get_or_404(id)
-    form = EditProfileAdminForm(user=user)
-    if form.validate_on_submit():
-        user.username = form.username.data
-        user.email = form.email.data
-        user.role_id = form.role.data
-        filename = photos.save(form.profile_picture.data)
-        user.profile_picture = photos.url(filename)
-        user.address = form.address.data
-        user.about_me = form.about_me.data
-        db.session.add(user)
-        flash('资料已更新')
-        return redirect(url_for('main.user', username=user.username))
-    form.username.data = user.username
-    form.email.data = user.email
-    form.role.data = user.role_id
-    form.address.data = user.address
-    form.about_me.data = user.about_me
-    return render_template('edit_profile.html', form=form, user=user)
-
-
 @main.route('/admin')
 @login_required
 @admin_required
@@ -132,105 +86,6 @@ def for_moderators_only():
     return "For comment moderators"
 
 
-@main.route('/article_label', methods=['GET', 'POST'])
-def article_label():
-    page = request.args.get('page', 1, type=int)
-    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
-        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
-        error_out=False)
-    posts = pagination.items
-    return render_template('article_label.html', posts=posts, pagination=pagination)
 
 
-@main.route('/article/<int:id>')
-def article(id):
-    post = Post.query.get_or_404(id)
-    return render_template('article.html', post=post)
 
-
-@main.route('/post_article', methods=['GET', 'POST'])
-@login_required
-def post_article():
-    form = PostForm()
-    if form.validate_on_submit():
-        post = Post(title=form.title.data,
-                    body=form.body.data,
-                    author=current_user._get_current_object())
-        db.session.add(post)
-        return redirect(url_for('.index'))
-    return render_template('post_article.html', form=form)
-
-
-@main.route('/edit_article/<int:id>', methods=['GET', 'POST'])
-@login_required
-def edit_article(id):
-    post = Post.query.get_or_404(id)
-    if current_user != post.author and \
-        not current_user.can(Permissions.ADMINISTER):
-        abort(403)
-    form = PostForm()
-    if form.validate_on_submit():
-        post.title = form.title.data
-        post.body = form.body.data
-        db.session.add(post)
-        flash('文章已修改！')
-        return redirect(url_for('.article', id=post.id))
-    form.title.data = post.title
-    form.body.data = post.body
-    return render_template('edit_article.html', form=form)
-
-
-@main.route('/follow/<username>', methods=['GET', 'POST'])
-@login_required
-# @Permissions
-def follow(username):
-    user = User.query.filter_by(username=username).first()
-    if user is None:
-        flash('用户不存在')
-        return redirect(url_for('.index'))
-    if current_user.is_following(user):
-        flash('已关注')
-    current_user.follow(user)
-    flash('已关注')
-    return render_template('follow.html')
-
-
-@main.route('/unfollow/<username>')
-@login_required
-def unfollow(username):
-    user = User.query.filter_by(username=username).first()
-    if user is None:
-        flash('用户不存在')
-    current_user.unfollow(user)
-    flash('已取消关注')
-    return render_template('unfollow.html')
-
-
-@main.route('/followers/<username>')
-def followers(username):
-    user = User.query.filter_by(username=username).first()
-    if user is None:
-        flash('用户不存在')
-    page = request.args.get('page', 1, type=int)
-    pagination = user.followers.paginate(
-        page, per_page=current_app.config['FLASKY_FOLLOWERS_PER_PAGE'],
-        error_out=False)
-    follows = [{'user': item.follower, 'timestamp': item.timestamp}
-               for item in pagination.items]
-    return render_template('followers.html', user=user, pagination=pagination,
-                           endpoint='.followers', follows=follows)
-
-
-@main.route('/followed/<username>')
-def followed(username):
-    user = User.query.filter_by(username=username).first()
-    if user is None:
-        flash('用户不存在')
-    page = request.args.get('page', 1, type=int)
-    pagination = user.followed.paginate(
-        page=page, per_page=current_app.config['FLASKY_FOLLOWERS_PER_PAGE'],
-        error_out=False)
-    following = [{'user': item.follower, 'timestamp': item.timestamp}
-                for item in pagination.items]
-    return render_template('followed.html', user=user, pagination=pagination,
-                           endpoint='.followed', following=following)

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
-{% import '_macros.html' as macros %}
+{% import 'article/_macros.html' as macros %}
 
 {% block head %}
 {{ super() }}
@@ -11,7 +11,7 @@
 
 {% block title %}文章{% endblock %}
 {% block page_content %}
-    {% include '_article_lists.html' %}
+    {% include 'article/_article_lists.html' %}
     {% if pagination %}
         <div class="pagination">
         {{ macros.pagination_widget(pagination,'.article_label') }}

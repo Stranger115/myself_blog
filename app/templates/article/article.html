@@ -3,5 +3,8 @@
 {% block page_content %}
     <h1>{{ post.title }}</h1>
     <h4>{{ post.author.username}}</h4>
+    {% if current_user.username == post.author.username %}
+        <a href="{{ url_for('article.edit_article', id=post.id) }}">编辑</a>
+    {% endif %}
     {{ post.body_html|safe }}
 {% endblock %}
