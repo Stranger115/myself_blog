@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'article/_macros.html' as macros%}
 {% block title %}{{ post.title }}{% endblock %}
 {% block page_content %}
     <h1>{{ post.title }}</h1>
@@ -7,4 +9,7 @@
         <a href="{{ url_for('article.edit_article', id=post.id) }}">编辑</a>
     {% endif %}
     {{ post.body_html|safe }}
+    {{ wtf.quick_form(form) }}
+    {% include 'article/_comments.html' %}
+    {{ macros.pagination_widget(pagination, '.article', id=post.id ) }}
 {% endblock %}

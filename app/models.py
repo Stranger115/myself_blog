@@ -92,7 +92,10 @@ class Post(db.Model):
     body_html = db.Column(db.Text)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    # comments = db.relationship('Post', backref='article', lazy='dynamic')
+    # 外码
+    comments = db.relationship('Comment', backref='article', lazy='dynamic')
+    labels = db.relationship('LabelArticle', backref='article', lazy='dynamic')
+
 
     # 处理Markdown文档， 将文本渲染成html
     @staticmethod
@@ -164,7 +167,7 @@ class User(UserMixin, db.Model):
     followers = db.relationship('Follow', foreign_keys=[Follow.followed_id],
                                 backref=db.backref('followed', lazy='joined'),
                                 lazy='dynamic', cascade='all,delete-orphan')
-    # comments = db.relationship('User', backref='author', lazy='dynamic')
+    comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
 
     # 定义默认用户角色
@@ -290,28 +293,48 @@ class AnonymousUser(AnonymousUserMixin):
 login_manager.anonymous_user = AnonymousUser
 
 
-# class Comment(db.Model):
-#     """评论"""
-#     __tablename__ = 'comments'
-#     id = db.Column(db.Integer, primary_key=True)
-#     body = db.Column(db.Text)
-#     body_html = db.Column(db.Text)
-#     disabled = db.Column(db.Boolean)  # 查禁不当评论
-#     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow())
-#
-#     author_id = db.Column(db.Integer, primary_key='users.id')
-#     article_id = db.Column(db.Integer, primary_key='posts.id')
-#
-#     @staticmethod
-#     def on_changed_body(target, value, oldvalue, initator):
-#         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em',
-#                         'i', 'li', 'ol', 'pre', 'strong', 'ul', 'h1',
-#                         'h2', 'h3', 'p']
-#         target.body_html = bleach.linkify(bleach.clean(
-#             markdown(value, output_format='html'),
-#             tags=allowed_tags, strip=True))
-# # 监听
-# db.event.listen(Comment.body, 'set', Comment.on_changed_body)
+class Comment(db.Model):
+    """评论"""
+    __tablename__ = 'comments'
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    body_html = db.Column(db.Text)
+    disabled = db.Column(db.Boolean)  # 查禁不当评论
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow())
+
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    article_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+
+    @staticmethod
+    def on_changed_body(target, value, oldvalue, initator):
+        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em',
+                        'i', 'li', 'ol', 'pre', 'strong', 'ul', 'h1',
+                        'h2', 'h3', 'p']
+        target.body_html = bleach.linkify(bleach.clean(
+            markdown(value, output_format='html'),
+            tags=allowed_tags, strip=True))
+
+
+# 监听
+db.event.listen(Comment.body, 'set', Comment.on_changed_body)
+
+
+class LabelSpan(db.Model):
+    """文章标签"""
+    __tablename__ = 'label_spans'
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(15))
+
+    label_articles = db.relationship('LabelArticle', backref='label', lazy='dynamic',
+                                     )
+
+
+class LabelArticle(db.Model):
+    """标签与文章"""
+    __tablename__ = 'label_articles'
+    id = db.Column(db.Integer, primary_key=True)
+    article_label_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+    label_id = db.Column(db.Integer, db.ForeignKey('label_spans.id'))
 
 
 

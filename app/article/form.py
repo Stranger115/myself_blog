@@ -9,11 +9,11 @@ from wtforms.validators import DataRequired, Length
 
 
 class PostForm(FlaskForm):
-    title = StringField('标题', validators=[DataRequired(), Length(1, 64)])
+    title = StringField('标题:', validators=[DataRequired(), Length(1, 64)])
     body = PageDownField('正文：', validators=[DataRequired()])
     submit = SubmitField('提交')
 
 
 class CommentForm(FlaskForm):
-    body = PageDownField('评论：', validators=[DataRequired(), Length(1, 64)])
+    body = StringField('评论：', validators=[DataRequired(), Length(1, 64)])
     submit = SubmitField('发表评论')

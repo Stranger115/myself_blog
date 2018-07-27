@@ -4,12 +4,10 @@
 # date: 2018/4/14
 
 from datetime import datetime
-from flask import render_template, request, redirect, url_for, flash, abort,\
+from flask import render_template, request, redirect, url_for, abort,\
     current_app, make_response
 from flask.ext.login import login_required, current_user
-from app import db, photos
 from . import main
-from .forms import EditProfileUserForm, EditProfileAdminForm
 from ..models import User, Permissions, Post
 from ..decorators import admin_required, permission_required
 
@@ -18,6 +16,7 @@ from ..decorators import admin_required, permission_required
 @main.route('/', methods=['GET', 'POST'])
 def index():
     show_followed = False
+
     # 首页显示所关注者的文章
     if current_user.is_authenticated:
         show_followed = bool(request.cookies.get('show_followed', ''))
@@ -34,6 +33,14 @@ def index():
                            current_time=datetime.utcnow())
 
 
+# @main.route('/', methods=['GET', 'POST'])
+# def search():
+#     form = SearchForm()
+#     if form.validate_on_submit():
+#         contain = form.contain
+
+
+# 关注文章列表
 @main.route('/choose_articles')
 def show_all():
     resp = make_response(redirect(url_for('.index')))
@@ -41,12 +48,14 @@ def show_all():
     return resp
 
 
+# 推荐文章列表
 @main.route('/followed_articles')
 @login_required
 def show_followed_articles():
     resp = make_response(redirect(url_for('.index')))
     resp.set_cookie('show_followed', '1', max_age=30*24*60*60)
     return resp
+
 
 @main.errorhandler(404)
 def page_not_find(e):
@@ -62,6 +71,7 @@ def internal_server_error(e):
 #         # 跨蓝本的重定向必须使用带有命名空间的端点名
 
 
+# 个人中心
 @main.route('/user/<username>')
 @login_required
 def user(username):
@@ -72,6 +82,7 @@ def user(username):
     return render_template('user.html', user=user, posts=posts)
 
 
+# 后台管理员
 @main.route('/admin')
 @login_required
 @admin_required
@@ -79,6 +90,7 @@ def for_admin_only():
     return "For administrators!"
 
 
+# 评论管理员
 @main.route('/moderator')
 @login_required
 @permission_required(Permissions.MODERATE_COMMITS)

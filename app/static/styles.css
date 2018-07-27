@@ -1,3 +1,80 @@
+/*body, .container {*/
+    /*max-width: 700px;*/
+    /*margin: 0 auto;*/
+/*}*/
+
+/*通用样式*/
+body {
+    background: url("images/main.jpeg") ;
+}
+/*导航条样式*/
+a , a:link, a:visited{
+    color: #c69993;
+    text-decoration: none;
+}
+a:hover{
+    color: #a27876;
+}
+.logo {
+    font-weight: bold;
+    color: #c69993;
+    font-size: 30px;
+}
+
+.nav-row li a{
+    /*background: #e0e0e0;*/
+    background: #f1eff000;
+    color:#c69993 ;
+}
+.nav-row li a:hover{
+    color: #a27876;
+}
+
+.line {
+    background: #eeeeee;
+    height:1px;
+    width: 100%;
+    margin: 20px;
+}
+
+/*主页样式*/
+
+.right_main{
+    border: solid #c69993 1px;
+    background: #ffffff;
+}
+
+.left_main{
+    margin-right: 1px;
+    border: solid #c69993 1px;
+    border-width: 1px 0 1px 1px;
+    background: #ffffff;
+}
+
+
+
+.my_profile{
+    height: 150px;
+    width: 40%;
+    border-radius: 100%;
+    margin-top: 20px;
+}
+
+.page-header{
+    text-align: center;
+}
+
+.page-header p{
+    color: #999999;
+    text-align: left;
+    margin-left: 80px ;
+}
+
+
+.post-text{
+    resize: none;
+}
+
 .profile-thumbnail {
     position: absolute;
     height: 40px;
@@ -7,6 +84,8 @@
     min-height: 260px;
     margin-left: 280px;
 }
+/*文章样式*/
+
 div.post-tabs {
     margin-top: 16px;
 }
@@ -27,23 +106,56 @@ ul.posts li.post {
 ul.posts li.post:hover {
     background-color: #f0f0f0;
 }
-div.post-date {
-    float: right;
+
+/*文章列表样式*/
+
+.post-content {
+    margin: 30px auto 0 auto;
+    /*min-height: 48px;*/
+    height: 255px;
+    width: 85%;
+    color: #757575;
+    border: #e0e0e0 solid 1px;
+    overflow: hidden;
 }
 div.post-title{
     font-weight: bold;
+    text-align: center;
+    font-size: 30px;
 }
-div.post-author {
+div.post-author ,div.post-date{
     font-weight: bold;
     float: right;
+    margin-right: 10px;
+    color: #757575;
 }
+div.post-author a{
+    color: #757575;;
+}
+
+div.post-author a:hover{
+    color: #c69993;
+}
+div.post-content{
+    text-align: center;
+}
+div.post-body{
+    clear: both;
+    margin-top: 40px;
+}
+.post-body p{
+    margin: 45px;
+}
+.pagination .active a{
+    background-color:#757575 ;
+}
+
+
+
 div.post-thumbnail {
     position: absolute;
 }
-div.post-content {
-    margin-left: 48px;
-    min-height: 48px;
-}
+
 div.post-footer {
     text-align: right;
 }

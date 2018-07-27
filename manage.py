@@ -24,6 +24,16 @@ def make_shell_context():
 
 
 @manager.command
+def deploy():
+    """run"""
+    from flask_migrate import upgrade
+    from app.models import Role
+
+    upgrade()
+    Role.insert_roles()
+
+
+@manager.command
 def test():
     """Run the unit test"""
     import unittest

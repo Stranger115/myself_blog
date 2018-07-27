@@ -17,8 +17,8 @@ class EditProfileUserForm(FlaskForm):
                         validators=[DataRequired(), Length(1, 64), Email()])
     profile_picture = FileField('头像：', validators=[
                                                    FileAllowed(photos, '只能上传图片')])
-    address = StringField('地址', validators=[DataRequired(), Length(1, 64)])
-    about_me = TextAreaField('简介:', validators=[DataRequired()])
+    address = StringField('地址：', validators=[DataRequired(), Length(1, 64)])
+    about_me = TextAreaField('简介：', validators=[DataRequired()])
     submit = SubmitField('提交')
 
     def validate_email(self, field):
@@ -40,8 +40,8 @@ class EditProfileAdminForm(FlaskForm):
     profile_picture = FileField('头像：', validators=[
         FileAllowed(photos, '只能上传图片')])
     # name = StringField('姓名：', validators=[DataRequired()])
-    address = StringField('地址', validators=[DataRequired(), Length(1, 64)])
-    about_me = TextAreaField('简介:', validators=[DataRequired()])
+    address = StringField('地址：', validators=[DataRequired(), Length(1, 64)])
+    about_me = TextAreaField('简介：', validators=[DataRequired()])
     submit = SubmitField('提交')
 
     def __init__(self, user, *args, **kwargs):
@@ -59,6 +59,11 @@ class EditProfileAdminForm(FlaskForm):
         if field.data != self.user.username and \
                 User.query.filter_by(username=field.data).first():
             raise ValidationError('昵称已被注册')
+
+
+class SearchForm(FlaskForm):
+    contain = StringField('', validators=[DataRequired(), Length(1, 16)])
+    submit = SubmitField('搜一下')
 
 
 

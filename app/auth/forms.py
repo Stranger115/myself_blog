@@ -23,7 +23,7 @@ class LoginForm(Form):
 
 class RegistrationForm(Form):
     username = StringField('用户昵称：', validators=[DataRequired(), Length(1, 64)],)
-    email = StringField('用户邮箱', validators=[DataRequired(), Length(1, 64), Email()])
+    email = StringField('用户邮箱:', validators=[DataRequired(), Length(1, 64), Email()])
     password = PasswordField('密码：', validators=[DataRequired(),
                             EqualTo('password2', message='密码不一致'),
                             Length(8, 16, message='密码长度为8到16'),
