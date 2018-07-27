@@ -67,12 +67,6 @@ class SearchForm(FlaskForm):
     submit = SubmitField('搜一下')
 
 
-class LoginForm(FlaskForm):
-    username = StringField('用户登录:', validators=[DataRequired()])
-    password = PasswordField('我的密码:', validators=[DataRequired()])
-    remember_me = BooleanField('记住我', default='checked',
-                               validators=[DataRequired()])
-    submit = SubmitField('登录')
 
 
 

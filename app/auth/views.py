@@ -12,7 +12,7 @@ from app import db
 from . import auth
 
 
-@auth.route('/login', methods=['GET', 'POST'])
+# 登录表单函数
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -21,7 +21,7 @@ def login():
             login_user(user, form.remember_me.data)  # 在用户会话中记录用户已登录
             return redirect(request.args.get('next') or url_for('main.index'))
         flash('Invalid username or password')
-    return render_template('auth/_login.html', form=form)
+    return form
 
 
 @auth.route('/logout')
@@ -34,6 +34,7 @@ def logout():
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
+    login_form = login()
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(username=form.username.data, password=form.password.data,
@@ -48,7 +49,7 @@ def register():
                    token=token)
         flash('确认邮件已发送，请在邮箱中确认您的账户！')
         return redirect(url_for('main.index'))
-    return render_template('auth/register.html', form=form)
+    return render_template('auth/register.html', form=form, login_form=login_form)
 
 
 # 确认用户账号，用户点击这个链接要先登录才执行这个视图函数

@@ -1,6 +1,8 @@
 $(function () {
     // 设置登录界面全屏背景布
     $('.bg_login').css('height', $("body").height());
+    var height =  $('.register_page').height();
+    $('.register_page').css('height', height+50);
 
     $(".nav li").click(function () {
         $(this).addClass('active').siblings().removeClass('active');

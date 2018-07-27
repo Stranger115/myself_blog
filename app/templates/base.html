@@ -64,11 +64,11 @@
         <div class="col-md-offset-1 col-md-8 form_login">
 {#            {{ wtf.quick_form(form) }}#}
             <form method="post">
-                {{ form.hidden_tag() }}
-                {{ wtf.form_field(form.username) }}
-                {{ wtf.form_field(form.password) }}
-                {{ wtf.form_field(form.remember_me) }}
-                {{ wtf.form_field(form.submit,class='btn btn-primary btn-block login_btn')}}
+                {{ login_form.hidden_tag() }}
+                {{ wtf.form_field(login_form.username) }}
+                {{ wtf.form_field(login_form.password) }}
+                {{ wtf.form_field(login_form.remember_me) }}
+                {{ wtf.form_field(login_form.submit,class='btn btn-primary btn-block login_btn')}}
             </form>
             <p >
                 新用户？
@@ -83,4 +83,5 @@
 {% block scripts %}
     {{ super() }}
     {{ moment.include_moment() }}
+    <script src="{{ url_for('static', filename='js/main.js')}}"></script>
 {% endblock %}
