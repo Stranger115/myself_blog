@@ -46,7 +46,7 @@
                          </li>
                          {# 其current_user由Flask-login定义 是否为匿名用户#}
                      {% else %}
-                         <li><a href="{{ url_for('auth.login') }}">登录</a></li>
+                         <li class="show_login"><a  href="#">登录</a></li>
                          <li><a href="{{ url_for('auth.register') }}">注册</a></li>
                      {% endif %}
                  </ul>
@@ -55,13 +55,27 @@
     </div>
 {% endblock %}
 {% block content %} {#主体内容块#}
-    <div class="container">
-        {% for message in get_flashed_messages() %}
-        <div class="alert alert-warning">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            {{ message }}
+    <div class="bg_login"></div>
+    <div class="login_content">
+        <div class="page-header">
+            <span class="header-text">登录</span>
+            <span class="iconfont close_login">&#xe624;</span>
         </div>
-         {% endfor %}
+        <div class="col-md-offset-1 col-md-8 form_login">
+{#            {{ wtf.quick_form(form) }}#}
+            <form method="post">
+                {{ form.hidden_tag() }}
+                {{ wtf.form_field(form.username) }}
+                {{ wtf.form_field(form.password) }}
+                {{ wtf.form_field(form.remember_me) }}
+                {{ wtf.form_field(form.submit,class='btn btn-primary btn-block login_btn')}}
+            </form>
+            <p >
+                新用户？
+                <a href="{{ url_for('auth.register') }}">注册</a>
+            </p></div>
+    </div>
+    <div class="container">
         {% block page_content %}{% endblock %}
     </div>
 {% endblock %}
@@ -69,5 +83,4 @@
 {% block scripts %}
     {{ super() }}
     {{ moment.include_moment() }}
-
 {% endblock %}

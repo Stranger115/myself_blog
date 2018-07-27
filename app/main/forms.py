@@ -3,7 +3,8 @@
 # _author: Stranger
 # date: 2018/4/12
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, SelectField
+from wtforms import StringField, SubmitField, TextAreaField, SelectField,\
+    PasswordField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, Regexp
 from wtforms import ValidationError
 from flask_wtf.file import FileField, FileAllowed
@@ -64,6 +65,14 @@ class EditProfileAdminForm(FlaskForm):
 class SearchForm(FlaskForm):
     contain = StringField('', validators=[DataRequired(), Length(1, 16)])
     submit = SubmitField('搜一下')
+
+
+class LoginForm(FlaskForm):
+    username = StringField('用户登录:', validators=[DataRequired()])
+    password = PasswordField('我的密码:', validators=[DataRequired()])
+    remember_me = BooleanField('记住我', default='checked',
+                               validators=[DataRequired()])
+    submit = SubmitField('登录')
 
 
 

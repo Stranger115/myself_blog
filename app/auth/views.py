@@ -21,7 +21,7 @@ def login():
             login_user(user, form.remember_me.data)  # 在用户会话中记录用户已登录
             return redirect(request.args.get('next') or url_for('main.index'))
         flash('Invalid username or password')
-    return render_template('auth/login.html', form=form)
+    return render_template('auth/_login.html', form=form)
 
 
 @auth.route('/logout')
