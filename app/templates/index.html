@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_login.html" %}
 {% import 'article/_macros.html' as marcos%}
 {% block title %}百尺陌上{% endblock %}
 {% block page_content %}
@@ -42,32 +42,10 @@
             {% endif %}
         </div>
     </div>
-    <div class="login_content">
-        <div class="page-header">
-            <span class="header-text">登录</span>
-            <span class="iconfont close_login">&#xe624;</span>
-        </div>
-        <div class="col-md-offset-1 col-md-8 form_login">
-{#            {{ wtf.quick_form(form) }}#}
-            <form method="post">
-{#                {{ login_form.hidden_tag() }}#}
-                {{ login_form.csrf_token }}
-                {{ wtf.form_field(login_form.username) }}
-                {{ wtf.form_field(login_form.password) }}
-                {{ wtf.form_field(login_form.remember_me) }}
-                {{ wtf.form_field(login_form.submit,class='btn btn-primary btn-block login_btn')}}
-            </form>
-            <p >
-                新用户？
-                <a href="{{ url_for('auth.register') }}">注册</a>
-            </p>
-        </div>
-    </div>
 {% endblock %}
 {% block scripts %}
     {{ super() }}
     {{ pagedown.include_pagedown() }}
-
 {% endblock %}
 
 

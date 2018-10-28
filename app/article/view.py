@@ -11,6 +11,7 @@ from .. import db
 from ..models import Post, Permissions, Comment
 from .form import PostForm, CommentForm
 from ..decorators import permission_required
+from ..auth.views import login_page
 
 
 # 修改文章
@@ -62,9 +63,9 @@ def article_label():
 
 # 文章详情页
 @article.route('/article/<int:id>', methods=['GET', 'POST'])
+@login_page
 def article(id):
     post = Post.query.get_or_404(id)
-    login_form = login()
     form = CommentForm()
     reply_form = CommentForm()
     if form.validate_on_submit():
@@ -87,5 +88,5 @@ def article(id):
         error_out=False)
     comments = pagination.items
     length = range(len(comments))
-    return render_template('article/article.html',length=length, post=post, login_form=login_form,
+    return render_template('article/article.html',length=length, post=post, login_form=g.login_form,
                            form=form, reply_form=reply_form, comments=comments, pagination=pagination)

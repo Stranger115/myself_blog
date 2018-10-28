@@ -3,10 +3,12 @@
 # _author: Stranger
 # date: 2018/5/16
 from functools import wraps
-from flask import abort
-from flask_login import current_user
-from .models import Permissions
+from flask import redirect, url_for, flash, request, g
+from flask_login import login_user, current_user
 
+from .auth.forms import LoginForm
+from .models import User, Permissions
+from flask import abort
 
 # 判定用户是否拥有指定权限装饰器
 def permission_required(permisson):

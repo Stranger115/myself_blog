@@ -2,14 +2,32 @@
 # -*- coding: utf-8 -*-
 # _author: Stranger
 # date: 2018/4/25
+from functools import wraps
+from flask import render_template, redirect, url_for, flash, request, g
+from flask_login import login_required, logout_user, current_user, login_user
 
-from flask import render_template, redirect, url_for, flash, request
-from flask.ext.login import login_user, login_required, logout_user, current_user
-from .forms import LoginForm, RegistrationForm
+from .forms import RegistrationForm, LoginForm
 from ..models import User
 from ..email import send_email
 from app import db
 from . import auth
+
+def login_page(func):
+    @wraps(func)
+    def excute(*args, **kwargs):
+        login_form = LoginForm()
+        g.login_form = login_form
+        if login_form.validate_on_submit():
+            user = User.query.filter_by(
+                username=login_form.username.data).first()
+            if user is not None and user.verify_psssword(
+                    login_form.password.data):
+                login_user(user, login_form.remember_me.data)  # 在用户会话中记录用户已登录
+                return redirect(
+                    request.args.get('next') or url_for('main.index'))
+            flash('Invalid username or password')
+        return func(*args, **kwargs)
+    return excute
 
 
 @auth.route('/logout')
@@ -21,17 +39,9 @@ def logout():
 
 
 @auth.route('/register', methods=['GET', 'POST'])
+@login_page
 def register():
     form = RegistrationForm()
-
-    login_form = LoginForm()
-    if login_form.validate_on_submit():
-        user = User.query.filter_by(username=login_form.username.data).first()
-        if user is not None and user.verify_psssword(login_form.password.data):
-            login_user(user, login_form.remember_me.data)  # 在用户会话中记录用户已登录
-            return redirect(request.args.get('next') or url_for('main.index'))
-        flash('Invalid username or password')
-
     if form.validate_on_submit():
         user = User(username=form.username.data, password=form.password.data,
                     phone_num=form.phone_num.data, address=form.address.data,
@@ -45,7 +55,7 @@ def register():
                    token=token)
         flash('确认邮件已发送，请在邮箱中确认您的账户！')
         return redirect(url_for('main.index'))
-    return render_template('auth/register.html', form=form, login_form=login_form)
+    return render_template('auth/register.html', form=form, login_form=g.login_form)
 
 
 # 确认用户账号，用户点击这个链接要先登录才执行这个视图函数
