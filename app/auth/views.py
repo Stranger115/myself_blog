@@ -12,18 +12,6 @@ from app import db
 from . import auth
 
 
-# 登录表单函数
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user is not None and user.verify_psssword(form.password.data):
-            login_user(user, form.remember_me.data)  # 在用户会话中记录用户已登录
-            return redirect(request.args.get('next') or url_for('main.index'))
-        flash('Invalid username or password')
-    return form
-
-
 @auth.route('/logout')
 @login_required
 def logout():
@@ -34,8 +22,16 @@ def logout():
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
-    login_form = login()
     form = RegistrationForm()
+
+    login_form = LoginForm()
+    if login_form.validate_on_submit():
+        user = User.query.filter_by(username=login_form.username.data).first()
+        if user is not None and user.verify_psssword(login_form.password.data):
+            login_user(user, login_form.remember_me.data)  # 在用户会话中记录用户已登录
+            return redirect(request.args.get('next') or url_for('main.index'))
+        flash('Invalid username or password')
+
     if form.validate_on_submit():
         user = User(username=form.username.data, password=form.password.data,
                     phone_num=form.phone_num.data, address=form.address.data,

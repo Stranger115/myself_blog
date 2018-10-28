@@ -9,7 +9,6 @@ from flask_login import login_required, current_user
 from . import article
 from .. import db
 from ..models import Post, Permissions, Comment
-from ..auth.views import login
 from .form import PostForm, CommentForm
 from ..decorators import permission_required
 

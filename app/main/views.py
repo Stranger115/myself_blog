@@ -10,7 +10,6 @@ from flask_login import login_required, current_user,login_user
 from . import main
 from ..models import User, Permissions, Post
 from ..decorators import admin_required, permission_required
-from ..auth.views import login
 from ..auth.forms import LoginForm
 
 
@@ -33,7 +32,7 @@ def index():
     posts = pagination.items
 
     # 显示登录
-    login_form  =LoginForm ()
+    login_form = LoginForm()
     if login_form.validate_on_submit():
         user = User.query.filter_by(username=login_form.username.data).first()
         if user is not None and user.verify_psssword(login_form.password.data):
