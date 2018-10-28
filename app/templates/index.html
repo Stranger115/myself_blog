@@ -22,19 +22,19 @@
             </div>
         </div>
         <div class="col-md-7 right_main">
-             <div class="post-tabs">
-        <ul class="nav nav-tabs">
-            <li class="active">
-                <a href="{{ url_for('.show_all') }}">推荐</a>
-            </li>
-            {% if current_user.is_authenticated %}
-                <li>
-                    <a href="{{ url_for('.show_followed_articles') }}">我的关注</a>
+            <div class="post-tabs">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="{{ url_for('.show_all') }}">推荐</a>
                 </li>
-            {% endif %}
+                {% if current_user.is_authenticated %}
+                    <li>
+                        <a href="{{ url_for('.show_followed_articles') }}">我的关注</a>
+                    </li>
+                {% endif %}
         </ul>
-        {% include 'article/_article_lists.html' %}
-    </div>
+            {% include 'article/_article_lists.html' %}
+            </div>
             {% if pagination %}
                 <div class="pagination">
                     {{ marcos.pagination_widget(pagination, '.index')}}

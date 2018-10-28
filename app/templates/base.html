@@ -7,6 +7,7 @@
 {{ super() }}{#基模板其内容不为空，保留基模板定义的块的原始内容#}
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico')}}">
     <link rel="icon" href="{{ url_for('static',filename='favicon.ico') }}">
+
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock %}
@@ -66,4 +67,5 @@
     {{ super() }}
     {{ moment.include_moment() }}
     <script src="{{ url_for('static', filename='js/main.js')}}"></script>
+    <script src="{{url_for('static', filename='js/jquery.cookie.js')}}"></script>
 {% endblock %}

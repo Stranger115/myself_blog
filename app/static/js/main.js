@@ -5,9 +5,12 @@ $(function () {
     $('.register_page').css('height', height + 50);
 
 
-    $(".nav li").click(function () {
-        $(this).addClass('active').siblings().removeClass('active');
-    });
+    var show_article = $.cookie('show_followed');
+
+    if(show_article === '1'){
+        $('.post-tabs ul li:first-child').removeClass('active');
+        $('.post-tabs ul li').eq(1).addClass('active');
+    }
 
     // 显示登录模块
     $(".show_login").click(function () {
@@ -28,5 +31,5 @@ $(function () {
     // 隐藏评论显示
     $(".reply button").click(function () {
         $(this).parent().parent().fadeOut(10)
-    })
+    });
 });
