@@ -5,12 +5,13 @@
 
 from datetime import datetime
 from flask import render_template, request, redirect, url_for, abort,\
-    current_app, make_response
-from flask_login import login_required, current_user
+    current_app, make_response,flash
+from flask_login import login_required, current_user,login_user
 from . import main
 from ..models import User, Permissions, Post
 from ..decorators import admin_required, permission_required
 from ..auth.views import login
+from ..auth.forms import LoginForm
 
 
 # 路由修饰器由蓝本提供
@@ -32,7 +33,13 @@ def index():
     posts = pagination.items
 
     # 显示登录
-    login_form = login()
+    login_form  =LoginForm ()
+    if login_form.validate_on_submit():
+        user = User.query.filter_by(username=login_form.username.data).first()
+        if user is not None and user.verify_psssword(login_form.password.data):
+            login_user(user, login_form.remember_me.data)  # 在用户会话中记录用户已登录
+            return redirect(request.args.get('next') or url_for('main.index'))
+        flash('Invalid username or password')
 
     return render_template('index.html', pagination=pagination, posts=posts,
                            current_time=datetime.utcnow(), login_form=login_form)

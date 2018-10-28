@@ -1,47 +1,48 @@
-
-
 <ul class="comments">
-    {% for comment in comments %}
-        <div class="comment-thumbnail">
-            <a href="{{url_for('main.user', username=comment.author.username) }}">
-                <img src="{{url_for('static', filename='images/profile_picture/default.jpg') }}" 
-                     alt="头像" class="img-rounded profile-thumbnail">
-                
-            </a>
-        </div>
-        <div class="comment-content">
-            <div class="comment-date">
-                {{ moment(comment.timestamp).fromNow()}}
+    {% for i in length %}
+        <li>
+            <div class="comment-thumbnail">
+                <a href="{{url_for('main.user', username=comments[i].author.username) }}">
+                    <img src="{{url_for('static', filename='images/profile_picture/default.jpg') }}"
+                         alt="头像" class="img-rounded profile-thumbnail">
+                </a>
             </div>
-            <div class="comment-author">
-                {{ comment.author.username }}
-            </div>
-            <div class="comment-body">
-                {% if comment.disabled %}
-                    <p><i>该评论为不当评论，已被禁止</i></p>
-                {% endif %}
-                {% if moderate or not comment.disabled %}
-                    {% if comment.body_html %}
-                        {{ comment.body_html | safe }}
-                    {% else %}
-                        {{ comment.body }}
+            <div class="comment-content">
+                <div class="comment-date">
+                    <span class="reply_func" value="{{ i }}">回复</span>
+                    <span>{{ moment(comments[i].timestamp).format('YYYY年M月D日')}}</span>
+                </div>
+                <div class="comment-author">
+                    {{ comments[i].author.username }}
+                </div>
+                <div class="comment-body">
+                    {% if comments[i].disabled %}
+                        <p><i>该评论为不当评论，已被禁止</i></p>
                     {% endif %}
+                    {% if moderate or not comments[i].disabled %}
+                        {% if comments[i].body_html %}
+                            {{ comments[i].body_html | safe }}
+                        {% else %}
+                            {{ comments[i].body }}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% if moderate %}
+                <br>
+                {% if comments[i].disabled %}
+                    <a class="btn btn-default btn-xs"
+                       href="{{ url_for('.moderate_enable', id=comments[i].id, page=page) }}">
+                        启用
+                    </a>
+                {% else %}
+                    <a class="btn btn-default btn-xs"
+                       href="{{ url_for('.moderate_disable', id=comments[i].id, page=page) }}">
+                        禁止
+                    </a>
                 {% endif %}
-            </div>
-        {% if moderate %}
-            <br>
-            {% if comment.disabled %}
-                <a class="btn btn-default btn-xs"
-                   href="{{ url_for('.moderate_enable', id=comment.id, page=page) }}">
-                    启用
-                </a>
-            {% else %}
-                <a class="btn btn-default btn-xs"
-                   href="{{ url_for('.moderate_disable', id=comment.id, page=page) }}">
-                    禁止
-                </a>
             {% endif %}
-        {% endif %}
-        </div>
+            </div>
+            <div class="reply" index="{{ i }}">{{ wtf.quick_form(form) }}</div>
+        </li>
     {% endfor %}
 </ul>

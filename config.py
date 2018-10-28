@@ -37,9 +37,11 @@ class Config:
 
     # 分页显示数量
     FLASKY_POSTS_PER_PAGE = 2
-    FLASKY_FOLLOWERS_PER_PAGE = 10
-    FLASKY_INDEX_PRE_PAGE = 5
-    FLASKY_COMMINTS_PER_PAGE = 10
+    FLASKY_FOLLOWERS_PER_PAGE = 2
+    FLASKY_INDEX_PRE_PAGE = 4
+    FLASKY_COMMINTS_PER_PAGE = 5
+
+    WTF_CSRF_ENABLED = False
 
     # 对当前环境配置初始化
     @staticmethod

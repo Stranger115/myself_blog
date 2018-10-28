@@ -1,0 +1,68 @@
+/*文章详情页样式*/
+.article_page{
+    background-color: #f0f0f0;
+    margin-top: 30px;
+
+}
+.article_page h1{
+    text-align: center;
+}
+.article_page h4{
+    text-align: right;
+    margin-right: 50px;
+    margin-bottom: 20px;
+}
+.article_page p{
+    width: 70%;
+    margin: 10px auto 0 auto;
+}
+
+.article_page span{
+    float: right;
+    margin-right: 20px;
+}
+.func span:nth-child(1){
+    margin-right: 18%;
+}
+
+/*文章评论样式*/
+
+.comment{
+    margin: 60px auto;
+    width: 65%;
+}
+.comment .form-group {
+    display: inline;
+}
+.comment .form-group .form-control{
+    width: 30%;
+    display: inline;
+    margin: 10px;
+}
+.comment-content{
+     position: relative;
+}
+.comment #submit{
+    margin-top: -2.8px;
+}
+.comment-content .comment-date{
+    position: absolute;
+    bottom: 1px;
+    right: 5px;
+    font-size: 10px;
+}
+.comment .comment_pagination{
+    float: right;
+    margin-right: 20px;
+}
+.comments li{
+    margin: 15px;
+}
+.reply {
+    margin: 10px 0;
+    display: none;
+}
+
+.login_content{
+    display: none;
+}

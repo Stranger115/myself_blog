@@ -1,15 +1,32 @@
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 {% import 'article/_macros.html' as macros%}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static',filename="css/article.css") }}">
+{% endblock %}
 {% block title %}{{ post.title }}{% endblock %}
 {% block page_content %}
-    <h1>{{ post.title }}</h1>
-    <h4>{{ post.author.username}}</h4>
-    {% if current_user.username == post.author.username %}
-        <a href="{{ url_for('article.edit_article', id=post.id) }}">编辑</a>
-    {% endif %}
-    {{ post.body_html|safe }}
-    {{ wtf.quick_form(form) }}
-    {% include 'article/_comments.html' %}
-    {{ macros.pagination_widget(pagination, '.article', id=post.id ) }}
+    <div class="col-md-offset-2 col-md-9 article_page">
+        <h1>{{ post.title }}</h1>
+        <h4>作者：{{ post.author.username}}</h4>
+        {% if current_user.username == post.author.username %}
+            <a href="{{ url_for('article.edit_article', id=post.id) }}">编辑</a>
+        {% endif %}
+        <p>
+            {{ post.body_html|safe }}
+        </p>
+         <div class="func">
+            <span class="iconfont">&#xe61e;</span>
+            <span class="iconfont">&#xe67b;</span>
+        </div>
+        <div class="comment">
+            {{ wtf.quick_form(form) }}
+            {% include 'article/_comments.html' %}
+            <div class="comment_pagination">
+                {{ macros.pagination_widget(pagination, '.article', id=post.id ) }}
+            </div>
+        </div>
+
+    </div>
 {% endblock %}
